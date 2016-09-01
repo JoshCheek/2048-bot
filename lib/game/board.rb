@@ -21,7 +21,7 @@ module Game
 
     def self.random_start
       rows = 4.times.map { 4.times.map { 0 } }
-      2.times { rows[rand 4][rand 4] = (rand < 0.5 ? 2 : 4) }
+      2.times { rows[rand 4][rand 4] = [2, 4].sample }
       new rows
     end
 
@@ -45,8 +45,10 @@ module Game
       return false if rows.any? { |row| row.any? { |cell| cell == 0 } }
       (0..3).each do |rank|
         (0..2).each do |index|
-          return false if rows[rank][index] == rows[rank][index+1]
-          return false if rows[index][rank] == rows[index+1][rank]
+          curnt = rows[rank][index]
+          right = rows[rank][index+1]
+          below = rows[index+1][rank]
+          return false if curnt == right || curnt == below
         end
       end
       true
@@ -136,7 +138,7 @@ module Game
 
     private
 
-    INDEXES = [*0..3].flat_map { |y| [*0..3].map { |x| [y, x] } }.map(&:freeze).freeze
+    INDEXES = (0..3).flat_map { |y| (0..3).map { |x| [y, x] } }.map(&:freeze).freeze
 
     def available?(y, x)
       rows[y][x] == 0
@@ -144,12 +146,6 @@ module Game
 
     def perform_shift(rank_type:, increasing:)
       next_rows = rows.map { |row| row.dup }
-
-      if increasing
-        tos = 3.downto(0)
-      else
-        tos = 0.upto(3)
-      end
 
       if rank_type == :column
         get = -> rank, index        { next_rows[index][rank]         }
@@ -161,10 +157,17 @@ module Game
         raise "bug: #{rank_type.inspect} is not :column or :row"
       end
 
+      if increasing
+        tos   = 3.downto(0)
+        froms = -> to { (to-1).downto(0) }
+      else
+        tos   = 0.upto(3)
+        froms = -> to { (to+1).upto(3) }
+      end
+
       (0..3).each do |rank|
         tos.each do |to|
-          froms = increasing ? (to-1).downto(0) : (to+1).upto(3)
-          froms.each do |from|
+          froms[to].each do |from|
             to_value   = get[rank, to]
             from_value = get[rank, from]
             if from_value == 0
