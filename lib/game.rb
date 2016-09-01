@@ -29,12 +29,43 @@ module Game
     end
 
     def generate_tile
-      raise 'fidme (random insertion of 2 or 4... there may be rules about when to do which, idk)'
+      y, x = INDEXES.select { |y, x| available? y, x }.sample
+      return self unless y && x # an optimization
+      new_cells = cells.map.with_index do |row, index|
+        next row unless index == y
+        row = row.dup
+        row[x] = 2
+        row
+      end
+      self.class.new(new_cells)
     end
 
     def to_a
       cells
     end
+
+    # hash and eql? allow boards to be hash keys,
+    # which allow them to be used in a a set,
+    # which allow us to call .uniq on an array of them
+    def hash
+      cells.hash
+    end
+    def eql?(board)
+      cells.eql?(board.cells)
+    end
+
+    def tiles
+      cells.flatten
+    end
+
+    private
+
+    INDEXES = [*0..3].flat_map { |y| [*0..3].map { |x| [y, x] } }.map(&:freeze).freeze
+
+    def available?(y, x)
+      cells[y][x] == 0
+    end
+
   end
 
 

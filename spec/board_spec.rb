@@ -28,17 +28,55 @@ RSpec.describe 'Board' do
           [0, 0, 0, 0],
           [0, 0, 0, 0],
         ]
-        board.generate_tile.to_a
+        board.generate_tile
       end.uniq
 
-      expect(boards.length).to be < 100 # sanity check
+      expect(boards.length).to be < 100 # sanity check, there are only 16 available positions
+      expect(boards.length).to be > 1   # if random, they shouldn't all be the same
 
       boards.each do |board|
-        tile_counts = board.tiles.group_by(&:itself)
-                           .map { |tile, tiles| [tile, tiles.length] }
-                           .to_h
-        expect(tile_counts).to eq 0 => 15, 2 => 1
+        expect(board.tiles.group_by(&:itself)
+                    .map { |tile, tiles| [tile, tiles.length] }
+                    .to_h).to eq 0 => 15, 2 => 1
       end
+    end
+
+    it 'only generates on empty locations' do
+      100.times do
+        board = Game::Board.from_array [
+          [0, 0, 8, 8],
+          [8, 8, 8, 8],
+          [8, 8, 8, 8],
+          [8, 8, 8, 8],
+        ]
+        expect([
+          [ [2, 0, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+          ],
+          [ [0, 2, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+          ],
+        ]).to include(board.generate_tile.to_a)
+      end
+    end
+
+    it 'does not generate a tile when there are no empty locations' do
+      board = Game::Board.from_array [
+        [8, 8, 8, 8],
+        [8, 8, 8, 8],
+        [8, 8, 8, 8],
+        [8, 8, 8, 8],
+      ]
+      expect(board.generate_tile.to_a).to eq [
+        [8, 8, 8, 8],
+        [8, 8, 8, 8],
+        [8, 8, 8, 8],
+        [8, 8, 8, 8],
+      ]
     end
   end
 end
