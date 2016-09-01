@@ -96,7 +96,6 @@ RSpec.describe 'Board' do
         [0, 0, 0, 2],
         [0, 0, 4, 2],
       ]
-      raise 'pass'
 
       # up
       board = Game::Board[
@@ -111,6 +110,7 @@ RSpec.describe 'Board' do
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ]
+      raise 'pass'
 
       # down
       board = Game::Board[
