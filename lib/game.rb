@@ -4,6 +4,7 @@ module Game
       validate rows
       new rows
     end
+
     def self.validate(rows)
       rows.length == 4 or raise ArgumentError, "Expected 4 rows, got #{rows.length}"
       rows.each do |row|
@@ -60,6 +61,7 @@ module Game
     def hash
       rows.hash
     end
+
     def eql?(board)
       rows.eql?(board.rows)
     end
@@ -81,8 +83,7 @@ module Game
     end
 
     def perform_shift(rank_type:, increasing:)
-      next_rows   = rows.map { |row| row.dup }
-      ranks       = 0..3
+      next_rows = rows.map { |row| row.dup }
 
       if increasing
         tos = 3.downto(0)
@@ -100,14 +101,9 @@ module Game
         raise "bug: #{rank_type.inspect} is not :column or :row"
       end
 
-
-      ranks.each do |rank|
+      (0..3).each do |rank|
         tos.each do |to|
-          if increasing
-            froms = (to-1).downto(0)
-          else
-            froms = (to+1).upto(3)
-          end
+          froms = increasing ? (to-1).downto(0) : (to+1).upto(3)
           froms.each do |from|
             to_value   = get[rank, to]
             from_value = get[rank, from]
@@ -129,6 +125,7 @@ module Game
           end
         end
       end
+
       self.class.new next_rows
     end
 
