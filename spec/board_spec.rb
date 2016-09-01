@@ -141,7 +141,7 @@ RSpec.describe 'Board' do
       ]
     end
 
-    xit 'breaks merge ties by merging the ones farthest in the direction of movement (ie they pile up the way they would in physics' do
+    it 'breaks merge ties by merging the ones farthest in the direction of movement (ie they pile up the way they would in physics' do
       board = Game::Board[
         [2, 2, 2, 0],
         [0, 2, 2, 4],

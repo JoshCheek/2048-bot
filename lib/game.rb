@@ -109,31 +109,22 @@ module Game
             froms = (to+1).upto(3)
           end
           froms.each do |from|
-            # puts "---------------"
-            # puts next_rows.map.with_index { |row, y|
-            #   row.map.with_index { |cell, x|
-            #     if y == rank && x == from
-            #       "\e[35m#{cell}\e[0m"
-            #     elsif y == rank && x == to
-            #       "\e[34m#{cell}\e[0m"
-            #     else
-            #       cell
-            #     end
-            #   }.join(' ')
-            # }
-
             to_value   = get[rank, to]
             from_value = get[rank, from]
             if from_value == 0
-              # spot is empty
-            elsif to_value == 0 && from_value != to_value
+              # nothing to move
+            elsif to_value == 0
+              # anything can move to here, and values after it can combine with it
               set[rank, to,   from_value]
               set[rank, from, 0]
             elsif to_value == from_value
+              # combine and move onto the next one (only one combination allowed per tile)
               set[rank, to,   to_value + from_value]
               set[rank, from, 0]
+              break
             else
-              break # from's value blocks anything after it
+              # can't combine and squares after the tile can't move through it
+              break
             end
           end
         end
