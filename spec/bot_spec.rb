@@ -69,9 +69,11 @@ RSpec.describe '2048 Bot' do
     ]
   end
 
-  it 'shifts in such a way that it combines tiles with some rudimentary intelligence' do
+  it 'shifts in such a way that it combines tiles with some rudimentary intelligence', t:true do
     board = Game::Board.random_start
-    200.times do
+    200.times do |i|
+      # puts board
+      # puts
       bot   = bot_for(board)
       board = board.shift(bot.move).generate_tile
       raise "Bot lost! #{board}" if board.finished?
@@ -79,7 +81,7 @@ RSpec.describe '2048 Bot' do
     expect(board.max_tile).to be >= 128
   end
 
-  xit 'can beat the game', t:true do
+  xit 'can beat the game' do
     board = Game::Board.random_start
     loop do
       break if board.finished?
