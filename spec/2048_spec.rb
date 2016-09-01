@@ -71,7 +71,7 @@ RSpec.describe '2048 bot' do
 
   it 'shifts in such a way that it combines tiles for as long as possible' do
     board = Game::Board.random_start
-    100.times do
+    200.times do
       bot   = bot_for(board)
       board = board.shift(bot.move).generate_tile
       raise "Bot lost! #{board}" if board.finished?

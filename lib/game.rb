@@ -57,6 +57,10 @@ module Game
       self.class.new(new_cells)
     end
 
+    def max_tile
+      rows.map { |row| row.max }.max
+    end
+
     def to_a
       rows
     end
