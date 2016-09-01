@@ -85,9 +85,9 @@ module Game
       ranks       = 0..3
 
       if increasing
-        tos = 0.upto(3)
-      else
         tos = 3.downto(0)
+      else
+        tos = 0.upto(3)
       end
 
       if rank_type == :column
@@ -100,6 +100,7 @@ module Game
         raise "bug: #{rank_type.inspect} is not :column or :row"
       end
 
+
       ranks.each do |rank|
         tos.each do |to|
           if increasing
@@ -108,16 +109,31 @@ module Game
             froms = (to+1).upto(3)
           end
           froms.each do |from|
+            # puts "---------------"
+            # puts next_rows.map.with_index { |row, y|
+            #   row.map.with_index { |cell, x|
+            #     if y == rank && x == from
+            #       "\e[35m#{cell}\e[0m"
+            #     elsif y == rank && x == to
+            #       "\e[34m#{cell}\e[0m"
+            #     else
+            #       cell
+            #     end
+            #   }.join(' ')
+            # }
+
             to_value   = get[rank, to]
             from_value = get[rank, from]
-            if to_value == 0 && from_value != to_value
+            if from_value == 0
+              # spot is empty
+            elsif to_value == 0 && from_value != to_value
               set[rank, to,   from_value]
               set[rank, from, 0]
             elsif to_value == from_value
               set[rank, to,   to_value + from_value]
               set[rank, from, 0]
             else
-              # ??
+              break # from's value blocks anything after it
             end
           end
         end

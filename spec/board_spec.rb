@@ -126,7 +126,7 @@ RSpec.describe 'Board' do
       ]
     end
 
-    xit 'consolidates equal value tiles that are shifted into each other' do
+    it 'consolidates equal value tiles that are shifted into each other' do
       board = Game::Board[
         [2, 2, 0, 0],
         [0, 2, 0, 2],
