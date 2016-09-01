@@ -168,9 +168,40 @@ RSpec.describe 'Board' do
   end
 
   describe 'finished?' do
-    it 'is false if there are open tiles'
-    it 'is false if it can be shifted in any direction'
-    it 'is true otherwise'
+    it 'is false if there are open tiles' do
+      expect(Game::Board[
+        [0, 2, 4, 2],
+        [8, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 2, 4],
+      ]).to_not be_finished
+    end
+    it 'is false if it can be shifted in any direction' do
+      # up/down
+      expect(Game::Board[
+        [8, 2, 4, 2],
+        [8, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 2, 4],
+      ]).to_not be_finished
+
+      # left/right
+      expect(Game::Board[
+        [8, 8, 4, 2],
+        [2, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 2, 4],
+      ]).to_not be_finished
+    end
+
+    it 'is true otherwise' do
+      expect(Game::Board[
+        [4, 2, 4, 2],
+        [2, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 2, 4],
+      ]).to be_finished
+    end
   end
 
   describe '#[]' do

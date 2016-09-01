@@ -42,7 +42,14 @@ module Game
     end
 
     def finished?
-      false # TODO should be smarter
+      return false if rows.any? { |row| row.any? { |cell| cell == 0 } }
+      (0..3).each do |rank|
+        (0..2).each do |index|
+          return false if rows[rank][index] == rows[rank][index+1]
+          return false if rows[index][rank] == rows[index+1][rank]
+        end
+      end
+      true
     end
 
     def generate_tile
