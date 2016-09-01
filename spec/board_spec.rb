@@ -63,7 +63,7 @@ RSpec.describe 'Board' do
     end
   end
 
-  describe 'shift' do
+  describe '#shift' do
     it 'splodes unless given a valid direction (:up, :down, :left, :right)' do
       board = Game::Board[
         [0, 0, 0, 0],
@@ -167,7 +167,7 @@ RSpec.describe 'Board' do
     end
   end
 
-  describe 'won?' do
+  describe '#won?' do
     it 'returns true once the board has seen a 2048 tile' do
       expect(Game::Board[
         [0, 0, 0,    0],
@@ -190,7 +190,7 @@ RSpec.describe 'Board' do
     end
   end
 
-  describe 'finished?' do
+  describe '#finished?' do
     it 'is false if there are open tiles' do
       expect(Game::Board[
         [0, 2, 4, 2],
@@ -249,7 +249,7 @@ RSpec.describe 'Board' do
     end
   end
 
-  describe 'generate_tile' do
+  describe '#generate_tile' do
     it 'randomly inserts a 2 into an open spot (really, I should look at their code to figure out how they generate tiles, sometimes they do 4s, and they seem to weighted based on the board' do
       boards = 100.times.map do
         board = Game::Board[
@@ -307,6 +307,25 @@ RSpec.describe 'Board' do
         [8, 8, 8, 8],
         [8, 8, 8, 8],
       ]
+    end
+  end
+
+  describe '#to_s' do
+    it 'returns a board that can be printed helpfully' do
+      board = Game::Board[
+        [0,   2,    0, 2],
+        [0,   0, 2048, 0],
+        [128, 0,    0, 0],
+        [128, 0,    0, 0],
+      ]
+      expect(board.to_s).to eq  "/-----------------\\\n"+
+                                "|   0  2     0  2 |\n"+
+                                "|   0  0  2048  0 |\n"+
+                                "| 128  0     0  0 |\n"+
+                                "| 128  0     0  0 |\n"+
+                               "\\-----------------/\n"
+      regex = Regexp.new(board.to_a.flatten.join(".*"), Regexp::MULTILINE)
+      expect(board.to_s).to match regex
     end
   end
 end

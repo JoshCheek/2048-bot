@@ -101,6 +101,17 @@ module Game
       raise ArgumentError, "Indexes should be from 0 to 3, you requested y:#{y.inspect}, x:#{x.inspect}"
     end
 
+    def to_s
+      cols   = rows.transpose.map { |col| col.map &:to_s }
+      widths = cols.map { |col| col.map(&:length).max }
+      format = widths.map { |w| "%#{w}d" }.join("  ")
+      formatted_rows = rows.map { |row| format % row }
+      horizontal = "-" * formatted_rows.first.length
+      "/-#{horizontal}-\\\n" +
+        formatted_rows.map { |row| "| #{row} |\n" }.join +
+        "\\-#{horizontal}-/\n"
+    end
+
     private
 
     INDEXES = [*0..3].flat_map { |y| [*0..3].map { |x| [y, x] } }.map(&:freeze).freeze
