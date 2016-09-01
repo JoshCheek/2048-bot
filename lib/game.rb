@@ -19,6 +19,12 @@ module Game
       end
     end
 
+    def self.random_start
+      rows = 4.times.map { 4.times.map { 0 } }
+      2.times { rows[rand 4][rand 4] = (rand < 0.5 ? 2 : 4) }
+      new rows
+    end
+
     attr_accessor :rows
 
     def initialize(rows)

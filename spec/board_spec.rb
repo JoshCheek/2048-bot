@@ -53,6 +53,16 @@ RSpec.describe 'Board' do
     end
   end
 
+  describe '.random_start' do
+    it 'places two tiles randomly on the board, those tiles have values of 2 or 4' do
+      boards = 1000.times.map { Game::Board.random_start }.uniq
+      expect(boards.length).to be < 1000 # sanity check, 16*15*2*2 < 1000
+      expect(boards.length).to be > 1    # if its random, they're unlikely to all be the same
+      all_tiles = boards.map { |b| b.tiles }.reduce(:|).sort
+      expect(all_tiles).to eq [0, 2, 4]
+    end
+  end
+
   describe 'shift' do
     it 'splodes unless given a valid direction (:up, :down, :left, :right)' do
       board = Game::Board[
