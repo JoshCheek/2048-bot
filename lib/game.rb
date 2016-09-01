@@ -1,11 +1,13 @@
 module Game
   class Board
     def self.[](*rows)
+      validate rows
+      new rows
+    end
+    def self.validate(rows)
       rows.length == 4 or raise ArgumentError, "Expected 4 rows, got #{rows.length}"
       rows.each do |row|
         row.length == 4 or raise ArgumentError, "Expected 4 columns, got #{row.length}"
-      end
-      rows.each do |row|
         row.each do |cell|
           Integer === cell or
             raise ArgumentError, "#{cell.inspect} should be an integer (use 0 for empty)"
@@ -14,7 +16,6 @@ module Game
           raise ArgumentError, "#{cell.inspect} is not a valid cell value"
         end
       end
-      new rows
     end
 
     attr_accessor :rows
