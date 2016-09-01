@@ -25,95 +25,13 @@ module Game
     end
 
     def shift(direction)
-      next_rows = rows.map { |row| row.dup }
       case direction
-      when :up
-        # for each col, start at the top and go down
-        (0..3).each do |col|
-          0.upto(3) do |y_to|
-            (y_to+1).upto(3) do |y_from|
-              to_value   = next_rows[y_to][col]
-              from_value = next_rows[y_from][col]
-              if to_value == 0 && from_value != to_value
-                next_rows[y_to][col]   = from_value
-                next_rows[y_from][col] = 0
-                true
-              elsif to_value == from_value
-                next_rows[y_to][col]   = to_value + from_value
-                next_rows[y_from][col] = 0
-                true
-              else
-                false
-              end
-            end
-          end
-        end
-      when :down
-        # for each col, start at the bottom and go up
-        (0..3).each do |col|
-          3.downto(0) do |y_to|
-            (y_to-1).downto(0) do |y_from|
-              to_value   = next_rows[y_to][col]
-              from_value = next_rows[y_from][col]
-              if to_value == 0 && from_value != to_value
-                next_rows[y_to][col]   = from_value
-                next_rows[y_from][col] = 0
-                true
-              elsif to_value == from_value
-                next_rows[y_to][col]   = to_value + from_value
-                next_rows[y_from][col] = 0
-                true
-              else
-                false
-              end
-            end
-          end
-        end
-      when :left
-        # for each row, start at the left and go right
-        (0..3).each do |row|
-          (0..3).each do |x_to|
-            (x_to+1..3).each do |x_from|
-              to_value   = next_rows[row][x_to]
-              from_value = next_rows[row][x_from]
-              if to_value == 0 && from_value != to_value
-                next_rows[row][x_to]   = from_value
-                next_rows[row][x_from] = 0
-                true
-              elsif to_value == from_value
-                next_rows[row][x_to]   = to_value + from_value
-                next_rows[row][x_from] = 0
-                true
-              else
-                false
-              end
-            end
-          end
-        end
-      when :right
-        # for each row, start at the right and go left
-        (0..3).each do |row|
-          3.downto(0) do |x_to|
-            (x_to-1).downto(0) do |x_from|
-              to_value   = next_rows[row][x_to]
-              from_value = next_rows[row][x_from]
-              if to_value == 0 && from_value != to_value
-                next_rows[row][x_to]   = from_value
-                next_rows[row][x_from] = 0
-                true
-              elsif to_value == from_value
-                next_rows[row][x_to]   = to_value + from_value
-                next_rows[row][x_from] = 0
-                true
-              else
-                false
-              end
-            end
-          end
-        end
+      when :right then perform_shift rank_type: :row,    increasing: true
+      when :left  then perform_shift rank_type: :row,    increasing: false
+      when :down  then perform_shift rank_type: :column, increasing: true
+      when :up    then perform_shift rank_type: :column, increasing: false
       else raise ArgumentError, "Not a direction: #{direction.inspect}"
       end
-      self.class.new next_rows
     end
 
     def finished?
@@ -160,6 +78,51 @@ module Game
 
     def available?(y, x)
       rows[y][x] == 0
+    end
+
+    def perform_shift(rank_type:, increasing:)
+      next_rows   = rows.map { |row| row.dup }
+      ranks       = 0..3
+
+      if increasing
+        tos = 0.upto(3)
+      else
+        tos = 3.downto(0)
+      end
+
+      if rank_type == :column
+        get = -> rank, index        { next_rows[index][rank]         }
+        set = -> rank, index, value { next_rows[index][rank] = value }
+      elsif rank_type == :row
+        get = -> rank, index        { next_rows[rank][index]         }
+        set = -> rank, index, value { next_rows[rank][index] = value }
+      else
+        raise "bug: #{rank_type.inspect} is not :column or :row"
+      end
+
+      ranks.each do |rank|
+        tos.each do |to|
+          if increasing
+            froms = (to-1).downto(0)
+          else
+            froms = (to+1).upto(3)
+          end
+          froms.each do |from|
+            to_value   = get[rank, to]
+            from_value = get[rank, from]
+            if to_value == 0 && from_value != to_value
+              set[rank, to,   from_value]
+              set[rank, from, 0]
+            elsif to_value == from_value
+              set[rank, to,   to_value + from_value]
+              set[rank, from, 0]
+            else
+              # ??
+            end
+          end
+        end
+      end
+      self.class.new next_rows
     end
 
   end
