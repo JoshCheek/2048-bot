@@ -167,6 +167,29 @@ RSpec.describe 'Board' do
     end
   end
 
+  describe 'won?' do
+    it 'returns true once the board has seen a 2048 tile' do
+      expect(Game::Board[
+        [0, 0, 0,    0],
+        [0, 0, 0,    0],
+        [0, 0, 0, 2048],
+        [0, 0, 0,    0],
+      ]).to be_won
+      expect(Game::Board[
+        [0,    0, 0, 0],
+        [0,    0, 0, 0],
+        [0,    0, 0, 0],
+        [0, 4096, 0, 0],
+      ]).to be_won
+      expect(Game::Board[
+        [0, 1024, 0, 0],
+        [0, 1024, 0, 0],
+        [0,    0, 0, 0],
+        [0,    0, 0, 0],
+      ]).to_not be_won
+    end
+  end
+
   describe 'finished?' do
     it 'is false if there are open tiles' do
       expect(Game::Board[

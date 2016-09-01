@@ -52,6 +52,10 @@ module Game
       true
     end
 
+    def won?
+      rows.any? { |row| row.any? { |cell| cell >= 2048 } }
+    end
+
     def generate_tile
       y, x = INDEXES.select { |y, x| available? y, x }.sample
       return self unless y && x # an optimization
