@@ -56,7 +56,25 @@ module Game
         end
       when :right
         # for each row, start at the right and go left
-        raise 'fixme'
+        (0..3).each do |row|
+          3.downto(0) do |x_to|
+            (x_to-1).downto(0) do |x_from|
+              to_value   = next_rows[row][x_to]
+              from_value = next_rows[row][x_from]
+              if to_value == 0 && from_value != to_value
+                next_rows[row][x_to]   = from_value
+                next_rows[row][x_from] = 0
+                true
+              elsif to_value == from_value
+                next_rows[row][x_to]   = to_value + from_value
+                next_rows[row][x_from] = 0
+                true
+              else
+                false
+              end
+            end
+          end
+        end
       else raise ArgumentError, "Not a direction: #{direction.inspect}"
       end
       self.class.new next_rows
