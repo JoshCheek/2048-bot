@@ -25,15 +25,41 @@ module Game
     end
 
     def shift(direction)
-      offset = case direction
-               when :up    then [-1,  0]
-               when :down  then [ 1,  0]
-               when :left  then [ 0, -1]
-               when :right then [ 0,  1]
-               else raise ArgumentError, "Not a direction: #{direction.inspect}"
-               end
-
-      # rows.map.with_index do |row,
+      next_rows = rows.map { |row| row.dup }
+      case direction
+      when :up
+        # for each col, start at the top and go down
+        raise 'fixme'
+      when :down
+        # for each col, start at the bottom and go up
+        raise 'fixme'
+      when :left
+        # for each row, start at the left and go right
+        (0..3).each do |row|
+          (0..3).each do |x_to|
+            (x_to+1..3).each do |x_from|
+              to_value   = next_rows[row][x_to]
+              from_value = next_rows[row][x_from]
+              if to_value == 0 && from_value != to_value
+                next_rows[row][x_to]   = from_value
+                next_rows[row][x_from] = 0
+                true
+              elsif to_value == from_value
+                next_rows[row][x_to]   = to_value + from_value
+                next_rows[row][x_from] = 0
+                true
+              else
+                false
+              end
+            end
+          end
+        end
+      when :right
+        # for each row, start at the right and go left
+        raise 'fixme'
+      else raise ArgumentError, "Not a direction: #{direction.inspect}"
+      end
+      self.class.new next_rows
     end
 
     def finished?
@@ -64,6 +90,10 @@ module Game
     end
     def eql?(board)
       rows.eql?(board.rows)
+    end
+
+    def ==(board)
+      rows == board.rows
     end
 
     def tiles
