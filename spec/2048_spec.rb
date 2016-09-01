@@ -6,7 +6,7 @@ RSpec.describe '2048 bot' do
   end
 
   it 'can shift left' do
-    board = Game::Board.from_array [
+    board = Game::Board[
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -22,7 +22,7 @@ RSpec.describe '2048 bot' do
   end
 
   it 'can shift down' do
-    board = Game::Board.from_array [
+    board = Game::Board[
       [0, 0, 0, 0],
       [2, 0, 0, 0],
       [4, 0, 0, 0],
@@ -38,7 +38,7 @@ RSpec.describe '2048 bot' do
   end
 
   it 'can shift right' do
-    board = Game::Board.from_array [
+    board = Game::Board[
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -54,7 +54,7 @@ RSpec.describe '2048 bot' do
   end
 
   it 'can shift up' do
-    board = Game::Board.from_array [
+    board = Game::Board[
       [0, 0, 0, 4],
       [0, 0, 0, 4],
       [0, 0, 0, 2],

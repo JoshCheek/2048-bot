@@ -1,15 +1,15 @@
 module Game
   class Board
-    def self.from_array(cells)
-      raise "wrong height!" if cells.length != 4 # TODO not tested
-      raise "wrong width!"  if cells.map(&:length).any? { |w| w != 4 } # TODO not tested
-      new cells
+    def self.[](*rows)
+      raise "wrong height!" if rows.length != 4 # TODO not tested
+      raise "wrong width!"  if rows.map(&:length).any? { |w| w != 4 } # TODO not tested
+      new rows
     end
 
-    attr_accessor :cells
+    attr_accessor :rows
 
-    def initialize(cells)
-      self.cells = cells
+    def initialize(rows)
+      self.rows = rows
     end
 
     def shift(direction)
@@ -21,7 +21,7 @@ module Game
                else raise "Wat: #{direction.inspect}"
                end
       raise 'IDK what should happen here, go make a board spec!'
-      # cells.map.with_index do |row,
+      # rows.map.with_index do |row,
     end
 
     def finished?
@@ -31,7 +31,7 @@ module Game
     def generate_tile
       y, x = INDEXES.select { |y, x| available? y, x }.sample
       return self unless y && x # an optimization
-      new_cells = cells.map.with_index do |row, index|
+      new_cells = rows.map.with_index do |row, index|
         next row unless index == y
         row = row.dup
         row[x] = 2
@@ -41,21 +41,21 @@ module Game
     end
 
     def to_a
-      cells
+      rows
     end
 
     # hash and eql? allow boards to be hash keys,
     # which allow them to be used in a a set,
     # which allow us to call .uniq on an array of them
     def hash
-      cells.hash
+      rows.hash
     end
     def eql?(board)
-      cells.eql?(board.cells)
+      rows.eql?(board.rows)
     end
 
     def tiles
-      cells.flatten
+      rows.flatten
     end
 
     private
@@ -63,7 +63,7 @@ module Game
     INDEXES = [*0..3].flat_map { |y| [*0..3].map { |x| [y, x] } }.map(&:freeze).freeze
 
     def available?(y, x)
-      cells[y][x] == 0
+      rows[y][x] == 0
     end
 
   end

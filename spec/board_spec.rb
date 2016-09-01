@@ -1,7 +1,7 @@
 require 'game'
 
 RSpec.describe 'Board' do
-  describe '.from_array' do
+  describe '.[]' do
     it 'splodes unless given a 4x4 array of integers that are powers of 2, except for 1'
     it 'returns a board with the cells of the array'
   end
@@ -22,7 +22,7 @@ RSpec.describe 'Board' do
   describe 'generate_tile' do
     it 'randomly inserts a 2 into an open spot (really, I should look at their code to figure out how they generate tiles, sometimes they do 4s, and they seem to weighted based on the board' do
       boards = 100.times.map do
-        board = Game::Board.from_array [
+        board = Game::Board[
           [0, 0, 0, 0],
           [0, 0, 0, 0],
           [0, 0, 0, 0],
@@ -43,7 +43,7 @@ RSpec.describe 'Board' do
 
     it 'only generates on empty locations' do
       100.times do
-        board = Game::Board.from_array [
+        board = Game::Board[
           [0, 0, 8, 8],
           [8, 8, 8, 8],
           [8, 8, 8, 8],
@@ -65,7 +65,7 @@ RSpec.describe 'Board' do
     end
 
     it 'does not generate a tile when there are no empty locations' do
-      board = Game::Board.from_array [
+      board = Game::Board[
         [8, 8, 8, 8],
         [8, 8, 8, 8],
         [8, 8, 8, 8],
