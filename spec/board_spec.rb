@@ -163,6 +163,28 @@ RSpec.describe 'Board' do
     it 'is true otherwise'
   end
 
+  describe '#[]' do
+    let :board do
+      Game::Board[
+        [2, 8, 0, 0],
+        [4, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ]
+    end
+
+    it 'returns the value at the given y/x' do
+      expect(board[0, 0]).to eq 2
+      expect(board[1, 0]).to eq 4
+      expect(board[0, 1]).to eq 8
+    end
+
+    it 'splodes if given an incorrect value' do
+      expect { board[4, 0] }.to raise_error ArgumentError, /4/
+      expect { board[0, 5] }.to raise_error ArgumentError, /5/
+    end
+  end
+
   describe 'generate_tile' do
     it 'randomly inserts a 2 into an open spot (really, I should look at their code to figure out how they generate tiles, sometimes they do 4s, and they seem to weighted based on the board' do
       boards = 100.times.map do

@@ -74,6 +74,12 @@ module Game
       rows.flatten
     end
 
+    def [](y, x)
+      rows[y][x] || raise
+    rescue
+      raise ArgumentError, "Indexes should be from 0 to 3, you requested y:#{y.inspect}, x:#{x.inspect}"
+    end
+
     private
 
     INDEXES = [*0..3].flat_map { |y| [*0..3].map { |x| [y, x] } }.map(&:freeze).freeze
