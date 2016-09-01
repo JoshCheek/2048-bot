@@ -1,8 +1,19 @@
 module Game
   class Board
     def self.[](*rows)
-      raise "wrong height!" if rows.length != 4 # TODO not tested
-      raise "wrong width!"  if rows.map(&:length).any? { |w| w != 4 } # TODO not tested
+      rows.length == 4 or raise ArgumentError, "Expected 4 rows, got #{rows.length}"
+      rows.each do |row|
+        row.length == 4 or raise ArgumentError, "Expected 4 columns, got #{row.length}"
+      end
+      rows.each do |row|
+        row.each do |cell|
+          Integer === cell or
+            raise ArgumentError, "#{cell.inspect} should be an integer (use 0 for empty)"
+          next if cell == 0
+          next if cell != 1 && (cell == 2**Math.log2(cell).to_i)
+          raise ArgumentError, "#{cell.inspect} is not a valid cell value"
+        end
+      end
       new rows
     end
 

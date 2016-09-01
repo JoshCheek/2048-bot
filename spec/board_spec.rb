@@ -2,8 +2,55 @@ require 'game'
 
 RSpec.describe 'Board' do
   describe '.[]' do
-    it 'splodes unless given a 4x4 array of integers that are powers of 2, except for 1'
-    it 'returns a board with the cells of the array'
+    it 'splodes unless given a 4x4 array of integers that are 0, or 2**n for n > 0' do
+      # wrong number of rows
+      expect { Game::Board[
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ] }.to raise_error ArgumentError, /rows/
+
+      # wrong number of cols
+      expect { Game::Board[
+        [0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ] }.to raise_error ArgumentError, /col/
+
+      # /1/, violates that n is an integer
+      expect { Game::Board[
+        [/1/, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ] }.to raise_error ArgumentError, /\/1\//
+
+      # 2**0 = 1, violates that n > 0
+      expect { Game::Board[
+        [1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ] }.to raise_error ArgumentError, /1/
+
+      # 111 is not a power of 2
+      expect { Game::Board[
+        [111, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ] }.to raise_error ArgumentError, /111/
+    end
+
+    it 'returns a board with the cells of the array' do
+      expect { Game::Board[
+        [ 0,  2,  4,   8],
+        [16, 32, 64, 128],
+        [ 0,  0,  0,   0],
+        [ 0,  0,  0,   0],
+      ] }.to_not raise_error
+    end
   end
 
   describe 'shift' do
