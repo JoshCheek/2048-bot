@@ -10,30 +10,30 @@ RSpec.describe '2048 bot' do
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [2, 2, 0, 0],
+      [4, 4, 2, 0],
     ]
     expect(bot_for(board).move).to eq :left
     expect(board.shift(:left).to_a).to eq [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [4, 0, 0, 0],
+      [8, 2, 0, 0],
     ]
   end
 
   it 'can shift down' do
     board = Game::Board.from_array [
       [0, 0, 0, 0],
-      [0, 0, 0, 0],
       [2, 0, 0, 0],
-      [2, 0, 0, 0],
+      [4, 0, 0, 0],
+      [4, 0, 0, 0],
     ]
     expect(bot_for(board).move).to eq :down
     expect(board.shift(:down).to_a).to eq [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [4, 0, 0, 0],
+      [2, 0, 0, 0],
+      [8, 0, 0, 0],
     ]
   end
 
@@ -41,29 +41,29 @@ RSpec.describe '2048 bot' do
     board = Game::Board.from_array [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 2, 2],
       [0, 0, 0, 0],
+      [0, 2, 4, 4],
     ]
     expect(bot_for(board).move).to eq :right
     expect(board.shift(:right).to_a).to eq [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 4],
       [0, 0, 0, 0],
+      [0, 0, 2, 4],
     ]
   end
 
   it 'can shift up' do
     board = Game::Board.from_array [
-      [0, 0, 2, 0],
-      [0, 0, 2, 0],
-      [0, 0, 0, 0],
+      [0, 0, 0, 4],
+      [0, 0, 0, 4],
+      [0, 0, 0, 2],
       [0, 0, 0, 0],
     ]
     expect(bot_for(board).move).to eq :up
     expect(board.shift(:up).to_a).to eq [
-      [0, 0, 4, 0],
-      [0, 0, 0, 0],
+      [0, 0, 0, 8],
+      [0, 0, 0, 2],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ]
