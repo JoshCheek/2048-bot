@@ -50,7 +50,25 @@ module Game
         end
       when :down
         # for each col, start at the bottom and go up
-        raise 'fixme'
+        (0..3).each do |col|
+          3.downto(0) do |y_to|
+            (y_to-1).downto(0) do |y_from|
+              to_value   = next_rows[y_to][col]
+              from_value = next_rows[y_from][col]
+              if to_value == 0 && from_value != to_value
+                next_rows[y_to][col]   = from_value
+                next_rows[y_from][col] = 0
+                true
+              elsif to_value == from_value
+                next_rows[y_to][col]   = to_value + from_value
+                next_rows[y_from][col] = 0
+                true
+              else
+                false
+              end
+            end
+          end
+        end
       when :left
         # for each row, start at the left and go right
         (0..3).each do |row|

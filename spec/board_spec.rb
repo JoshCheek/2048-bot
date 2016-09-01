@@ -54,7 +54,7 @@ RSpec.describe 'Board' do
   end
 
   describe 'shift' do
-    xit 'splodes unless given a valid direction (:up, :down, :left, :right)' do
+    it 'splodes unless given a valid direction (:up, :down, :left, :right)' do
       board = Game::Board[
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -110,7 +110,6 @@ RSpec.describe 'Board' do
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ]
-      raise 'pass'
 
       # down
       board = Game::Board[
