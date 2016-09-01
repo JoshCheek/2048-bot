@@ -30,9 +30,9 @@ module Game
                when :down  then [ 1,  0]
                when :left  then [ 0, -1]
                when :right then [ 0,  1]
-               else raise "Wat: #{direction.inspect}"
+               else raise ArgumentError, "Not a direction: #{direction.inspect}"
                end
-      raise 'IDK what should happen here, go make a board spec!'
+
       # rows.map.with_index do |row,
     end
 

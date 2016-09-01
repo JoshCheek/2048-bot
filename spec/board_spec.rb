@@ -54,7 +54,20 @@ RSpec.describe 'Board' do
   end
 
   describe 'shift' do
-    it 'splodes unless given a valid direction (:up, :down, :left, :right)'
+    it 'splodes unless given a valid direction (:up, :down, :left, :right)' do
+      board = Game::Board[
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ]
+      board.shift :left
+      board.shift :right
+      board.shift :up
+      board.shift :down
+      expect { board.shift :inside_out }.to raise_error ArgumentError, /inside_out/
+    end
+
     it 'shifts the tiles in the specified direction for as long as there are open spaces in that direction'
     it 'consolidates equal value tiles that are shifted into each other'
     it 'breaks merge ties by merging the ones farthest in the direction of movement (ie they pile up the way they would in physics'
