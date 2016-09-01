@@ -1,6 +1,6 @@
 require 'game'
 
-RSpec.describe '2048 bot' do
+RSpec.describe '2048 Bot' do
   def bot_for(board)
     Game::Bot.new board
   end

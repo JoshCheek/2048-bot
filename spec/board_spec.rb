@@ -1,4 +1,4 @@
-require 'game'
+require 'game/board'
 
 RSpec.describe 'Board' do
   describe '.[]' do
