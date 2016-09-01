@@ -312,20 +312,25 @@ RSpec.describe 'Board' do
 
   describe '#to_s' do
     it 'returns a board that can be printed helpfully' do
-      board = Game::Board[
-        [0,   2,    0, 2],
-        [0,   0, 2048, 0],
-        [128, 0,    0, 0],
-        [128, 0,    0, 0],
+      board1 = Game::Board[
+        [0,  2,  4,   8],
+        [0, 32, 64, 128],
+        [0,  2,  4,   0],
+        [0,  2,  4,   0],
       ]
-      expect(board.to_s).to eq  "/-----------------\\\n"+
-                                "|   0  2     0  2 |\n"+
-                                "|   0  0  2048  0 |\n"+
-                                "| 128  0     0  0 |\n"+
-                                "| 128  0     0  0 |\n"+
-                               "\\-----------------/\n"
-      regex = Regexp.new(board.to_a.flatten.join(".*"), Regexp::MULTILINE)
-      expect(board.to_s).to match regex
+      board2 = Game::Board[
+        [   0,    2,     4,     8],
+        [  16,   32,    64,   128],
+        [ 256,  512,  1024,  2048],
+        [4096, 8192, 16384, 32768],
+      ]
+      regex = Regexp.new(board1.to_a.flatten.join(".*"), Regexp::MULTILINE)
+      # print "\e[H\e[2J"
+      # puts board1
+      # puts
+      # puts board2
+      # exit!
+      expect(board1.to_s).to match regex
     end
   end
 end

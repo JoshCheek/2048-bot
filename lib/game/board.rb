@@ -102,14 +102,36 @@ module Game
     end
 
     def to_s
-      cols   = rows.transpose.map { |col| col.map &:to_s }
-      widths = cols.map { |col| col.map(&:length).max }
-      format = widths.map { |w| "%#{w}d" }.join("  ")
-      formatted_rows = rows.map { |row| format % row }
-      horizontal = "-" * formatted_rows.first.length
-      "/-#{horizontal}-\\\n" +
-        formatted_rows.map { |row| "| #{row} |\n" }.join +
-        "\\-#{horizontal}-/\n"
+      rgb    = -> r, g, b { "\e[1;38;5;255;48;5;#{16 + 36*r + 6*g + b}m" }
+      off    = "\e[0m"
+      bg     = "\e[39;48;5;243m"
+      colour = -> cell do
+        case cell
+        when 0               then "\e[1;38;5;247;48;5;247m"
+        when 2               then rgb[4,4,4]+"\e[1;38;5;237m"
+        when 4               then rgb[4,4,3]+"\e[1;38;5;237m"
+        when 8               then rgb[4,2,1]
+        when 16              then rgb[5,2,1]
+        when 32              then rgb[5,1,1]
+        when 64              then rgb[5,1,0]
+        when 128, 256        then rgb[5,4,1]
+        when 512, 1024, 2048 then rgb[5,4,0]
+        else                      "\e[1;38;5;251;48;5;236m"
+        end
+      end
+
+      cols           = rows.transpose.map { |col| col.map &:to_s }
+      widths         = cols.map { |col| col.map(&:length).max }
+      horizontal     = bg + " "*(widths.inject(0, :+)+15)+off+"\n"
+      formats        = widths.map { |w| "%#{w}d" }
+      formatted_rows = rows.map do |row|
+        "#{bg}  " <<
+          formats.zip(row).map do |format, cell|
+            "#{colour[cell]} #{format % cell} "
+          end.join("#{bg} ") <<
+          "#{bg}  #{off}\n"
+      end.join
+      horizontal + formatted_rows + horizontal
     end
 
     private
