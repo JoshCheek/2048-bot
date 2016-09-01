@@ -1,10 +1,12 @@
+require 'game'
+
 RSpec.describe '2048 bot' do
   def bot_for(board)
     Game::Bot.new board
   end
 
   it 'can shift left' do
-    board = Game::Board.new [
+    board = Game::Board.from_array [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -20,7 +22,7 @@ RSpec.describe '2048 bot' do
   end
 
   it 'can shift down' do
-    board = Game::Board.new [
+    board = Game::Board.from_array [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [2, 0, 0, 0],
@@ -36,7 +38,7 @@ RSpec.describe '2048 bot' do
   end
 
   it 'can shift right' do
-    board = Game::Board.new [
+    board = Game::Board.from_array [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 2, 2],
@@ -52,7 +54,7 @@ RSpec.describe '2048 bot' do
   end
 
   it 'can shift up' do
-    board = Game::Board.new [
+    board = Game::Board.from_array [
       [0, 0, 2, 0],
       [0, 0, 2, 0],
       [0, 0, 0, 0],
@@ -71,7 +73,8 @@ RSpec.describe '2048 bot' do
     board = Game::Board.random_start
     100.times do
       bot   = bot_for(board)
-      board = board.shift(bot.move)
+      board = board.shift(bot.move).generate_tile
+      raise "Bot lost! #{board}" if board.finished?
     end
     expect(board.max_tile).to be >= 128
   end
