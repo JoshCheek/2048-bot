@@ -20,6 +20,7 @@ print "\e[?25l"
 at_exit { print "\e[?25h" }
 
 # read one input at a time (not necessarily one char)
+history = []
 $stdin.raw do
   loop do
     show_frame board
@@ -31,14 +32,39 @@ $stdin.raw do
              when "\e[C", "l"       then :right
              when "\e[B", "j"       then :down
              when "\e[D", "h"       then :left
+             when 'u'               then :undo
              when "q", 3.chr, 4.chr then :quit
              end
 
     next unless action
-    break if action == :quit
-    board = Game::ShiftBoard.call(board, action)
-    show_frame board
-    board = board.add_random_tile
-    sleep 0.1
+    case action
+    when :quit
+      break
+    when :undo
+      _, board = history.pop
+    else
+      history.push [action, board]
+      next_board = Game::ShiftBoard.call(board, action)
+      if board == next_board
+        history.pop
+      else
+        show_frame next_board
+        board = next_board.add_random_tile
+      end
+      sleep 0.1
+    end
+  end
+end
+
+puts
+print "Save history (Y/n) "
+answer = gets.chomp
+answer = 'y' if answer == ''
+if answer =~ /y/i
+  File.open("history.csv", 'a') do |file|
+    format = '%s,' + Array.new(16, '%d').join(',') + "\n"
+    history.each do |move, board|
+      file.write sprintf(format, move, *board.tiles)
+    end
   end
 end
