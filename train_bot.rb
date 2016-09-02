@@ -22,65 +22,71 @@ potentials = [
   },
 ]
 
-MAX_TILE = 32768.0
 def translate_board(board)
-  board.tiles.map { |tile| tile / MAX_TILE }
+  board.tiles.map { |tile| tile }
 end
 
-def rank(brain:, turns:)
-  board = Game::Board.random_start
+def play(brain:, turns:, board:)
+  directions = {}
   turns.times do
     output    = brain.eval(translate_board board)
     direction = output.zip(DIRECTIONS).max_by(&:first).last
+    directions[direction] = true
     board     = Game::ShiftBoard.call(board, direction)
   end
-  Game::Heuristic.rank(board)
+  p directions.keys
+  board
 end
 
-at_exit {
-  binding.pry
-}
+training_count = 0
+define_method :train_more do
+  loop do
+    training_count += 1
+    # iterate from the top bots
+    potentials = potentials
+      .uniq
+      .map { |trainer:, board:|
+        board = play(brain: trainer.network, board: board, turns: 20)
+        score = Game::Heuristic.rank(board)
+        [{trainer: trainer, board: board}, score]
+      }
+      .sort_by { |_, score| -score }
+      .take(100)
+      .tap { |best| p training_count => best.map(&:last) }
+      .map(&:first)
 
-2001.times do |i|
-  # iterate from the top bots
-  potentials = potentials
-    .uniq
-    .map { |potential|
-      score = rank(brain: potential[:trainer].network, turns: 20)
-      [potential, score]
-    }
-    .sort_by { |_, score| -score }
-    .take(20)
-    .tap { |best| p i => best.map(&:last) }
-    .map(&:first)
+    # For each direction we can move in
+    # train the bot that it should move there
+    # for the current board.
+    #
+    # Then play each of the four forward,
+    # and keep the one that did the best.
+    # then loop
+    potentials = potentials.flat_map do |trainer:, board:|
+      shift = Game::ShiftBoard.new(board)
+      DIRECTIONS.each_index.map do |index|
+        expected = [0] * 4
+        expected[index] = 1
+        inputs       = translate_board(board)
+        neurons      = trainer.network.feedforward(inputs)
+        next_trainer = trainer.backpropagate(expected, neurons)
 
-  # For each direction we can move in
-  # train the bot that it should move there
-  # for the current board.
-  #
-  # Then play each of the four forward,
-  # and keep the one that did the best.
-  # then loop
-  potentials = potentials.flat_map do |trainer:, board:|
-    shift = Game::ShiftBoard.new(board)
-    DIRECTIONS.each_index.map do |index|
-      expected = [0] * 4
-      expected[index] = 1
-      inputs       = translate_board(board)
-      neurons      = trainer.network.feedforward(inputs)
-      next_trainer = trainer.backpropagate(expected, neurons)
-
-      outputs      = neurons.last
-      raise outputs.inspect unless outputs.length == 4
-      direction    = outputs.zip(DIRECTIONS).max_by(&:first).last
-      next_board   = shift.call(direction)
-      {trainer: next_trainer, board: next_board}
+        outputs      = neurons.last
+        raise outputs.inspect unless outputs.length == 4
+        direction    = outputs.zip(DIRECTIONS).max_by(&:first).last
+        next_board   = shift.call(direction)
+        {trainer: next_trainer, board: next_board}
+      end
     end
   end
 end
 
-require "pry"
-binding.pry
+begin
+  train_more
+rescue Interrupt
+  binding.pry
+end
+
 
 
 # loop do
