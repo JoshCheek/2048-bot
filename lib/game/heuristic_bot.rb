@@ -1,3 +1,5 @@
+# Thought:
+# Try placing the piece in every spot rather than operating on a random spot as if it's surefire knowledge?
 module Game
   class HeuristicBot
     attr_accessor :board, :depth

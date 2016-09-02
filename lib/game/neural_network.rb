@@ -104,7 +104,7 @@ class NeuralNetwork
     attr_writer :network
     attr_accessor :changes, :learning_rate, :momentum
 
-    def backpropagate(expected_output_values, all_neurons)
+    public def backpropagate(expected_output_values, all_neurons)
       all_deltas    = calculate_deltas(all_neurons, expected_output_values)
       weights       = network.weights
       next_weights  = []
@@ -151,8 +151,9 @@ class NeuralNetwork
         .reduce([output_deltas]) { |deltas, layer|
           deltas.unshift(
             neurons[layer].zip(all_weights[layer]).map { |node, weights|
-              network.d_propagation_fn(node) *
-                deltas.first.zip(weights).map { |d, w| d * w }.reduce(0, :+)
+              derivative = network.d_propagation_fn(node)
+              error      = weights.zip(deltas.first).map { |d, w| d * w }.reduce(0, :+)
+              derivative * error
             }
           )
         }
