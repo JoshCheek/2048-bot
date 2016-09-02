@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'game/board'
 require 'game/neural_network'
-require 'game/heuristic_bot'
+require 'game/heuristic'
 require 'pry'
 def show_frame(board)
   print "\e[H\e[2J"
@@ -32,7 +32,7 @@ def rank(brain:, turns:)
     direction = output.zip(DIRECTIONS).max_by(&:first).last
     board     = board.shift(direction)
   end
-  Game::HeuristicBot.new(board, 0).rank_board(board)
+  Game::Heuristic.rank(board)
 end
 
 at_exit {
