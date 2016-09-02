@@ -16,6 +16,19 @@ $ bin/watch
 $ rspec
 ```
 
+Accuracy
+--------
+
+The current implementation doesn't consider that 4 can spawn.
+Namely b/c that seemed less important than getting the AI to be able
+to beat the game as it was, and I feel like I need to read their code
+in order to find out the real answer for how fours appear.
+
+...actually, as I write this, I realize it's stupid, so I just checked
+and found the answer in like 3 minutes: there's a 90% chance of getting
+a 2 and a 10% chance of getting a 4 ([code](https://github.com/gabrielecirulli/2048/blob/837ca51b6f254c416cb74b6a1baa1bb7cc7e6fd1/js/game_manager.js#L69)).
+
+
 The board
 ---------
 
