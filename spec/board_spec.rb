@@ -146,7 +146,7 @@ RSpec.describe 'Board' do
   end
 
   describe '#add_random_tile' do
-    it 'randomly inserts a 2 into an open spot (really, I should look at their code to figure out how they generate tiles, sometimes they do 4s, and they seem to weighted based on the board' do
+    it 'randomly inserts a 2 into an open spot 90% of the time, and a 4 10% of the time' do
       boards = 100.times.map do
         board = Game::Board[
           [0, 0, 0, 0],
@@ -160,11 +160,17 @@ RSpec.describe 'Board' do
       expect(boards.length).to be < 100 # sanity check, there are only 16 available positions
       expect(boards.length).to be > 1   # if random, they shouldn't all be the same
 
+      saw_a_two = saw_a_four = false
       boards.each do |board|
-        expect(board.tiles.group_by(&:itself)
-                    .map { |tile, tiles| [tile, tiles.length] }
-                    .to_h).to eq 0 => 15, 2 => 1
+        tile_counts = board.tiles.group_by(&:itself)
+                           .map { |tile, tiles| [tile, tiles.length] }
+                           .to_h
+        expect(tile_counts[0]).to eq 15
+        saw_a_two  ||= tile_counts[2]
+        saw_a_four ||= tile_counts[4]
       end
+      expect(saw_a_two).to be_truthy
+      expect(saw_a_four).to be_truthy
     end
 
     it 'only generates on empty locations' do
@@ -182,6 +188,16 @@ RSpec.describe 'Board' do
             [8, 8, 8, 8],
           ],
           [ [0, 2, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+          ],
+          [ [4, 0, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+            [8, 8, 8, 8],
+          ],
+          [ [0, 4, 8, 8],
             [8, 8, 8, 8],
             [8, 8, 8, 8],
             [8, 8, 8, 8],

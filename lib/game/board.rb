@@ -57,7 +57,7 @@ module Game
       new_tiles = rows.map.with_index do |row, index|
         next row unless index == y
         row = row.dup
-        row[x] = 2
+        row[x] = (rand < 0.9 ? 2 : 4)
         row
       end
       self.class.new(new_tiles)
