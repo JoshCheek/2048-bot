@@ -136,6 +136,10 @@ module Game
       horizontal + formatted_rows + horizontal
     end
 
+    def each_row(&block)
+      rows.each(&block)
+    end
+
     private
 
     INDEXES = (0..3).flat_map { |y| (0..3).map { |x| [y, x] } }.map(&:freeze).freeze

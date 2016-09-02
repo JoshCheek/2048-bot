@@ -10,10 +10,8 @@ module Game
 
       # larger tiles are worth more points
       # implies fewer tiles is better
-      for y in 0..3
-        for x in 0..3
-          score += (2**board[y, x])
-        end
+      board.each_row do |row|
+        row.each { |tile| score += (2**tile) }
       end
 
       # tiles along the edge are worth more points
