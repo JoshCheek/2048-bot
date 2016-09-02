@@ -35,15 +35,17 @@ module Game
     end
 
     def cached_heuristic(depth, board)
-      cache[board] ||= heuristic(depth, board)
+      cache[board] ||= calculate_heuristic(depth, board)
     end
 
-    def heuristic(depth, board)
+    def calculate_heuristic(depth, board)
       if depth.zero? || board.finished?
         Heuristic.rank(board)
       else
-        _direction, score = best_move(depth-1, board.generate_tile)
-        score
+        _, score1 = best_move(depth-1, board.generate_tile)
+        _, score2 = best_move(depth-1, board.generate_tile)
+        # run 2x in an attempt to mitigate lucky tile generation
+        score1 < score2 ? score1 : score2
       end
     end
   end
