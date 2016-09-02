@@ -22,7 +22,7 @@ loop do
   bot   = Game::HeuristicBot.new(board, depth, cache)
   board = Game::ShiftBoard.call(board, bot.move)
   show_frame board
-  board = board.generate_tile
+  board = board.add_random_tile
   show_frame board
   cache.clear if cache.size > 100_0000
 end

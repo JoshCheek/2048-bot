@@ -50,7 +50,8 @@ module Game
       rows.any? { |row| row.any? { |tile| tile >= 2048 } }
     end
 
-    def generate_tile
+    # https://github.com/gabrielecirulli/2048/blob/837ca51b6f254c416cb74b6a1baa1bb7cc7e6fd1/js/game_manager.js#L69
+    def add_random_tile
       y, x = INDEXES.select { |y, x| available? y, x }.sample
       return self unless y && x # an optimization
       new_tiles = rows.map.with_index do |row, index|

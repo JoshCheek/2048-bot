@@ -5,12 +5,6 @@ require 'game/shift_board'
 require 'game/heuristic'
 require 'pry'
 
-def show_frame(board)
-  print "\e[H\e[2J"
-  puts board
-  # sleep 0.01
-end
-
 DIRECTIONS = [:up, :down, :left, :right]
 potentials = [
   { trainer: NeuralNetwork::Trainer.init(
@@ -86,15 +80,3 @@ begin
 rescue Interrupt
   binding.pry
 end
-
-
-
-# loop do
-#   break if board.finished?
-#   break if board.won?
-#   bot   = Game::HeuristicBot.new(board, depth)
-#   board = board.shift(bot.move)
-#   show_frame board
-#   board = board.generate_tile
-#   show_frame board
-# end

@@ -42,8 +42,8 @@ module Game
       if depth.zero? || board.finished?
         Heuristic.rank(board)
       else
-        _, score1 = best_move(depth-1, board.generate_tile)
-        _, score2 = best_move(depth-1, board.generate_tile)
+        _, score1 = best_move(depth-1, board.add_random_tile)
+        _, score2 = best_move(depth-1, board.add_random_tile)
         # run 2x in an attempt to mitigate lucky tile generation
         score1 < score2 ? score1 : score2
       end

@@ -38,7 +38,7 @@ $stdin.raw do
     break if action == :quit
     board = Game::ShiftBoard.call(board, action)
     show_frame board
-    board = board.generate_tile
+    board = board.add_random_tile
     sleep 0.1
   end
 end

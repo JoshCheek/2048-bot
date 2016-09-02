@@ -92,7 +92,7 @@ RSpec.describe '2048 Bot' do
     200.times do |i|
       bot   = bot_for(board, depth: 1, cache: cache)
       board = shift(board, bot.move)
-      board = board.generate_tile
+      board = board.add_random_tile
       raise "Bot lost! #{board}" if board.finished?
     end
     expect(board.max_tile).to be >= 128
@@ -105,7 +105,7 @@ RSpec.describe '2048 Bot' do
       break if board.finished?
       break if board.won?
       bot   = bot_for(board, depth: 2, cache: cache)
-      board = board.shift(board, bot.move).generate_tile
+      board = board.shift(board, bot.move).add_random_tile
     end
     puts board
     expect(board.max_tile).to eq 2048
