@@ -1,8 +1,9 @@
-require 'game'
+require 'game/heuristic_bot'
+require 'game/board'
 
 RSpec.describe '2048 Bot' do
   def bot_for(board, depth=0)
-    Game::Bot.new board, depth
+    Game::HeuristicBot.new board, depth
   end
 
   it 'can shift left' do

@@ -1,5 +1,5 @@
 module Game
-  class Bot
+  class HeuristicBot
     attr_accessor :board, :depth
 
     def initialize(board, depth)
