@@ -1,9 +1,14 @@
-require 'game/heuristic_bot'
 require 'game/board'
+require 'game/shift_board'
+require 'game/heuristic_bot'
 
 RSpec.describe '2048 Bot' do
   def bot_for(board, depth=0)
     Game::HeuristicBot.new board, depth
+  end
+
+  def shift(board, direction)
+    Game::ShiftBoard.call board, direction
   end
 
   it 'can shift left' do
@@ -14,7 +19,7 @@ RSpec.describe '2048 Bot' do
       [4, 4, 2, 0],
     ]
     expect(bot_for(board).move).to eq :left
-    expect(board.shift(:left).to_a).to eq [
+    expect(shift(board, :left).to_a).to eq [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -30,7 +35,7 @@ RSpec.describe '2048 Bot' do
       [4, 0, 0, 0],
     ]
     expect(bot_for(board).move).to eq :down
-    expect(board.shift(:down).to_a).to eq [
+    expect(shift(board, :down).to_a).to eq [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [2, 0, 0, 0],
@@ -46,7 +51,7 @@ RSpec.describe '2048 Bot' do
       [0, 2, 4, 4],
     ]
     expect(bot_for(board).move).to eq :right
-    expect(board.shift(:right).to_a).to eq [
+    expect(shift(board, :right).to_a).to eq [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -62,7 +67,7 @@ RSpec.describe '2048 Bot' do
       [0, 0, 0, 0],
     ]
     expect(bot_for(board).move).to eq :up
-    expect(board.shift(:up).to_a).to eq [
+    expect(shift(board, :up).to_a).to eq [
       [0, 0, 0, 8],
       [0, 0, 0, 2],
       [0, 0, 0, 0],
@@ -74,7 +79,7 @@ RSpec.describe '2048 Bot' do
     board = Game::Board.random_start
     200.times do |i|
       bot   = bot_for(board, 1)
-      board = board.shift(bot.move)
+      board = shift(board, bot.move)
       board = board.generate_tile
       raise "Bot lost! #{board}" if board.finished?
     end
@@ -87,7 +92,7 @@ RSpec.describe '2048 Bot' do
       break if board.finished?
       break if board.won?
       bot   = bot_for(board)
-      board = board.shift(bot.move).generate_tile
+      board = board.shift(board, bot.move).generate_tile
     end
     puts board
     expect(board.max_tile).to eq 2048

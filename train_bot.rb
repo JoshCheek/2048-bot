@@ -1,8 +1,10 @@
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'game/board'
 require 'game/neural_network'
+require 'game/shift_board'
 require 'game/heuristic'
 require 'pry'
+
 def show_frame(board)
   print "\e[H\e[2J"
   puts board
@@ -30,7 +32,7 @@ def rank(brain:, turns:)
   turns.times do
     output    = brain.eval(translate_board board)
     direction = output.zip(DIRECTIONS).max_by(&:first).last
-    board     = board.shift(direction)
+    board     = Game::ShiftBoard.call(board, direction)
   end
   Game::Heuristic.rank(board)
 end
@@ -40,14 +42,15 @@ at_exit {
 }
 
 2001.times do |i|
-  # iterate from the top 100 bots
+  # iterate from the top bots
   potentials = potentials
+    .uniq
     .map { |potential|
-      score = rank(brain: potential[:trainer].network, turns: 100)
+      score = rank(brain: potential[:trainer].network, turns: 20)
       [potential, score]
     }
     .sort_by { |_, score| -score }
-    .take(100)
+    .take(20)
     .tap { |best| p i => best.map(&:last) }
     .map(&:first)
 
@@ -59,6 +62,7 @@ at_exit {
   # and keep the one that did the best.
   # then loop
   potentials = potentials.flat_map do |trainer:, board:|
+    shift = Game::ShiftBoard.new(board)
     DIRECTIONS.each_index.map do |index|
       expected = [0] * 4
       expected[index] = 1
@@ -69,7 +73,7 @@ at_exit {
       outputs      = neurons.last
       raise outputs.inspect unless outputs.length == 4
       direction    = outputs.zip(DIRECTIONS).max_by(&:first).last
-      next_board   = board.shift(direction)
+      next_board   = shift.call(direction)
       {trainer: next_trainer, board: next_board}
     end
   end
@@ -77,6 +81,7 @@ end
 
 require "pry"
 binding.pry
+
 
 # loop do
 #   break if board.finished?

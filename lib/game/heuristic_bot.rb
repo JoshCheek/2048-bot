@@ -1,4 +1,5 @@
 require 'game/heuristic'
+require 'game/shift_board'
 
 # Thought:
 # Try placing the piece in every spot rather than operating on a random spot as if it's surefire knowledge?
@@ -19,10 +20,11 @@ module Game
     private
 
     def best_move(depth_to_consider, board)
+      shift = ShiftBoard.new(board)
       [:up, :down, :left, :right]
         .map { |direction|
           [ direction,
-            heuristic(depth_to_consider, board.shift(direction))
+            heuristic(depth_to_consider, shift.call(direction))
           ]
         }
         .max_by { |_direction, score| score }
