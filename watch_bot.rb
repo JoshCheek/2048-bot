@@ -9,14 +9,16 @@ def show_frame(board)
 end
 
 depth = 5
+cache = {}
 board = Game::Board.random_start
 
 loop do
   break if board.finished?
   break if board.won?
-  bot   = Game::HeuristicBot.new(board, depth)
-  board = board.shift(bot.move)
+  bot   = Game::HeuristicBot.new(board, depth, cache)
+  board = Game::ShiftBoard.call(board, bot.move)
   show_frame board
   board = board.generate_tile
   show_frame board
+  cache = {} if cache.size > 100_0000
 end

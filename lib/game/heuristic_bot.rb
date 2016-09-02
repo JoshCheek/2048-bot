@@ -5,11 +5,12 @@ require 'game/shift_board'
 # Try placing the piece in every spot rather than operating on a random spot as if it's surefire knowledge?
 module Game
   class HeuristicBot
-    attr_accessor :board, :depth
+    attr_accessor :board, :depth, :cache
 
-    def initialize(board, depth)
+    def initialize(board, depth, cache={})
       self.board = board
       self.depth = depth
+      self.cache = cache
     end
 
     def move
@@ -31,15 +32,15 @@ module Game
     end
 
     def heuristic(depth_to_consider, board)
-      if depth_to_consider.zero? || board.finished?
-        Heuristic.rank(board)
-      else
-        _direction, score = best_move(
-          depth_to_consider-1,
-          board.generate_tile
-        )
-        score
-      end
+      cache[board] ||= if depth_to_consider.zero? || board.finished?
+                         Heuristic.rank(board)
+                       else
+                         _direction, score = best_move(
+                           depth_to_consider-1,
+                           board.generate_tile
+                         )
+                         score
+                       end
     end
   end
 end
