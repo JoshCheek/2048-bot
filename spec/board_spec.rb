@@ -98,16 +98,16 @@ RSpec.describe 'Board' do
     it 'is false if it can be shifted in any direction' do
       # up/down
       expect(Game::Board[
-        [8, 2, 4, 2],
-        [8, 4, 2, 4],
         [4, 2, 4, 2],
         [2, 4, 2, 4],
+        [4, 8, 4, 2],
+        [2, 8, 2, 4],
       ]).to_not be_finished
 
       # left/right
       expect(Game::Board[
-        [8, 8, 4, 2],
-        [2, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 8, 8],
         [4, 2, 4, 2],
         [2, 4, 2, 4],
       ]).to_not be_finished

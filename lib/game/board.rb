@@ -35,11 +35,11 @@ module Game
 
     def finished?
       return false if rows.any? { |row| row.any? { |tile| tile == 0 } }
-      (0..3).each do |rank|
+      (0..2).each do |rank|
         (0..2).each do |index|
           curnt = rows[rank][index]
           right = rows[rank][index+1]
-          below = rows[index+1][rank]
+          below = rows[rank+1][index]
           return false if curnt == right || curnt == below
         end
       end
