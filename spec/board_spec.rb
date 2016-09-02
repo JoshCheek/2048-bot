@@ -121,6 +121,24 @@ RSpec.describe 'Board' do
         [2, 4, 2, 4],
       ]).to be_finished
     end
+
+    it 'passes edge cases that showed up while exploring', t:true do
+      board = Game::Board[
+        [16, 32, 64, 128],
+        [4 ,  8,  2,   4],
+        [2 , 32,  8,   2],
+        [8 ,  2,  4,   2],
+      ]
+      expect(board).to_not be_finished
+
+      board = Game::Board[
+        [16, 32, 64, 128],
+        [4 ,  8,  2,   4],
+        [2 , 32,  8,  16],
+        [8 ,  4,  2,   2],
+      ]
+      expect(board).to_not be_finished
+    end
   end
 
   describe '#[]' do

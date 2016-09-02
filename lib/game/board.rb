@@ -43,7 +43,7 @@ module Game
           return false if curnt == right || curnt == below
         end
       end
-      true
+      rows[3][3] != rows[2][3] && rows[3][3] != rows[3][2]
     end
 
     def won?
