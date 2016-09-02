@@ -1,4 +1,6 @@
-$LOAD_PATH.unshift File.expand_path('lib', __dir__)
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'game/board'
 require 'game/heuristic_bot'
 
