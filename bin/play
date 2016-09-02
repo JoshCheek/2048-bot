@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+require 'game/shift_board'
+require 'game/board'
+require 'game/display_ansi_board'
+require 'io/console'
+
+def show_frame(board)
+  print "\e[H\e[2J"
+  puts Game::DisplayAnsiBoard.call(board).gsub("\n", "\r\n")
+end
+
+
+board = Game::Board.random_start
+show_frame board
+
+$stdin.raw do
+  loop do
+    show_frame board
+    break if board.finished?
+    break if board.won?
+    input = $stdin.readpartial 2048
+    action = case input
+             when "\e[A", "k"       then :up
+             when "\e[C", "l"       then :right
+             when "\e[B", "j"       then :down
+             when "\e[D", "h"       then :left
+             when "q", 3.chr, 4.chr then :quit
+             end
+
+    next unless action
+    break if action == :quit
+    board = Game::ShiftBoard.call(board, action)
+    show_frame board
+    board = board.generate_tile
+  end
+end
