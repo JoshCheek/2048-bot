@@ -14,7 +14,7 @@ module Game
       max_width      = cols.flat_map { |col| col.map &:length }.max
       widths         = cols.map { max_width }
       margin_size    = 15
-      horizontal     = BG + " "*widths.inject(margin_size, :+)+OFF+"\r\n"
+      horizontal     = "#{BG}#{' '*widths.inject(margin_size, :+)}#{OFF}\r\n"
       formats        = widths.map { |w| "%#{w}d" }
       formatted_rows = rows.map { |row|
         "#{BG}  " <<
@@ -23,7 +23,7 @@ module Game
           end.join("#{BG} ") <<
           "#{BG}  #{OFF}\r\n"
       }.join
-      horizontal + formatted_rows + horizontal
+      "#{horizontal}#{formatted_rows}#{horizontal}"
     end
 
     private
