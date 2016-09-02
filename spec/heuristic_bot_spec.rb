@@ -3,8 +3,8 @@ require 'game/shift_board'
 require 'game/heuristic_bot'
 
 RSpec.describe '2048 Bot' do
-  def bot_for(board, depth=0)
-    Game::HeuristicBot.new board, depth
+  def bot_for(board, depth: 0, cache: {})
+    Game::HeuristicBot.new board, depth, cache
   end
 
   def shift(board, direction)
@@ -77,8 +77,9 @@ RSpec.describe '2048 Bot' do
 
   it 'shifts in such a way that it combines tiles with some rudimentary intelligence', t:true do
     board = Game::Board.random_start
+    cache = {}
     200.times do |i|
-      bot   = bot_for(board, 1)
+      bot   = bot_for(board, depth: 1, cache: cache)
       board = shift(board, bot.move)
       board = board.generate_tile
       raise "Bot lost! #{board}" if board.finished?
@@ -88,10 +89,11 @@ RSpec.describe '2048 Bot' do
 
   xit 'can beat the game' do
     board = Game::Board.random_start
+    cache = {}
     loop do
       break if board.finished?
       break if board.won?
-      bot   = bot_for(board)
+      bot   = bot_for(board, depth: 2, cache: cache)
       board = board.shift(board, bot.move).generate_tile
     end
     puts board
