@@ -1,8 +1,8 @@
 require 'game'
 
 RSpec.describe '2048 Bot' do
-  def bot_for(board)
-    Game::Bot.new board
+  def bot_for(board, depth=0)
+    Game::Bot.new board, depth
   end
 
   it 'can shift left' do
@@ -72,10 +72,9 @@ RSpec.describe '2048 Bot' do
   it 'shifts in such a way that it combines tiles with some rudimentary intelligence', t:true do
     board = Game::Board.random_start
     200.times do |i|
-      # puts board
-      # puts
-      bot   = bot_for(board)
-      board = board.shift(bot.move).generate_tile
+      bot   = bot_for(board, 1)
+      board = board.shift(bot.move)
+      board = board.generate_tile
       raise "Bot lost! #{board}" if board.finished?
     end
     expect(board.max_tile).to be >= 128

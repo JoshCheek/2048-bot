@@ -1,26 +1,41 @@
 module Game
   class Bot
-    attr_accessor :board
-    def initialize(board)
+    attr_accessor :board, :depth
+
+    def initialize(board, depth)
       self.board = board
+      self.depth = depth
     end
 
     def move
-      move_heuristics.max_by { |dir, score| score }.first
+      dir, score = best_move(depth, board)
+      dir
     end
 
-    def move_heuristics
+    def best_move(depth_to_consider, board)
+      move_heuristics(depth_to_consider, board).max_by { |dir, score| score }
+    end
+
+    def move_heuristics(depth_to_consider, board)
       [:up, :down, :left, :right]
-        .map { |dir| [dir, heuristic(board.shift(dir))] }
+        .map { |dir| [dir, heuristic(depth_to_consider, board.shift(dir))] }
     end
 
-    def heuristic(board)
-      # Maybe ultimately consider these:
-      #   fewer tiles is better
-      #   tiles with higher numbers are worth more
-      #   corners are better
-      #   sequences of continually ascending / descending are better than flipping direction
-      # But for now, just something super simple
+    # Some things that seem like they're probably valuable:
+    #   fewer tiles is better
+    #   tiles with higher numbers are worth more
+    #   corners are better
+    #   sequences of continually ascending / descending are better than flipping direction
+    def heuristic(depth_to_consider, board)
+      if depth_to_consider.zero? || board.finished?
+        rank_board(board)
+      else
+        dir, score = best_move(depth_to_consider-1, board.generate_tile)
+        score
+      end
+    end
+
+    def rank_board(board)
       score = 0
 
       # larger tiles are worth more points
@@ -41,50 +56,7 @@ module Game
         score += board[edge, 3]
       end
 
-      # sequences of continually ascending sequences are better
-      # for each square,
-      #   it is the root of a sequence up, down, left, and right of it
-      #   the tile at that location is part of its sequence
-      #   if it is greater than or equal to the current tile
-      #   and not already part of the sequence
-
-      sequences.map do |sequence|
-        # not really sure how to rank them,
-        # but longer sequences should be better,
-        # and then after that, more sequences
-        # (or maybe only count the longest sequence?)
-        2 ** sequence.map { |_, _, val| val }.length
-      end
-
       score
-    end
-
-    def sequences
-      return @sequences if @sequences
-      @sequences = []
-      (0..3).each do |y|
-        (0..3).each do |x|
-          @sequences += sequences_from(y, x, [])
-        end
-      end
-      @sequences
-    end
-
-    def sequences_from(y, x, sequence)
-      _, _, prev = sequence.last
-      crnt = board[y, x]
-      return [] if crnt.zero?
-      return [] if prev && crnt <= prev
-      return [] if sequence.any? { |prev_y, prev_x, _|
-        prev_y == y && prev_x == x
-      }
-      next_sequence = sequence + [[y, x, crnt]]
-      sequences  = [next_sequence]
-      sequences += sequences_from(y-1, x  , next_sequence) if 0 < y
-      sequences += sequences_from(y+1, x  , next_sequence) if y < 3
-      sequences += sequences_from(y  , x-1, next_sequence) if 0 < x
-      sequences += sequences_from(y  , x+1, next_sequence) if x < 3
-      sequences
     end
   end
 end
