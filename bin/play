@@ -7,14 +7,19 @@ require 'game/display_ansi_board'
 require 'io/console'
 
 def show_frame(board)
-  print "\e[H\e[2J"
-  puts Game::DisplayAnsiBoard.call(board)
+  display = Game::DisplayAnsiBoard.call(board)
+  print "\e[H\e[2J#{display}"
 end
 
 
 board = Game::Board.random_start
 show_frame board
 
+# hide cursor during game
+print "\e[?25l"
+at_exit { print "\e[?25h" }
+
+# read one input at a time (not necessarily one char)
 $stdin.raw do
   loop do
     show_frame board
@@ -34,5 +39,6 @@ $stdin.raw do
     board = Game::ShiftBoard.call(board, action)
     show_frame board
     board = board.generate_tile
+    sleep 0.1
   end
 end

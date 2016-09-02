@@ -5,14 +5,16 @@ require 'game/board'
 require 'game/heuristic_bot'
 
 def show_frame(board)
-  print "\e[H\e[2J"
-  puts board
-  # sleep 0.01
+  print "\e[H\e[2J#{board}"
 end
 
 depth = 5
 cache = {}
 board = Game::Board.random_start
+
+# hide cursor during game
+print "\e[?25l"
+at_exit { print "\e[?25h" }
 
 loop do
   break if board.finished?
