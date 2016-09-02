@@ -5,6 +5,17 @@ In response to [a challenge](https://twitter.com/Ex_Caelum/status/77139310001503
 
 Video of it shittily beating 2048 [here](https://twitter.com/josh_cheek/status/771502796340400128).
 
+```sh
+# To play (use the arrow keys or vim keybindings)
+$ bin/play
+
+# To watch the bot play (it's not very good)
+$ bin/watch
+
+# To run the tests (if you don't have rspec, do `gem install rspec`)
+$ rspec
+```
+
 License
 -------
 
