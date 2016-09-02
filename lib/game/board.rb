@@ -9,12 +9,12 @@ module Game
       rows.length == 4 or raise ArgumentError, "Expected 4 rows, got #{rows.length}"
       rows.each do |row|
         row.length == 4 or raise ArgumentError, "Expected 4 columns, got #{row.length}"
-        row.each do |cell|
-          Integer === cell or
-            raise ArgumentError, "#{cell.inspect} should be an integer (use 0 for empty)"
-          next if cell == 0
-          next if cell != 1 && (cell == 2**Math.log2(cell).to_i)
-          raise ArgumentError, "#{cell.inspect} is not a valid cell value"
+        row.each do |tile|
+          Integer === tile or
+            raise ArgumentError, "#{tile.inspect} should be an integer (use 0 for empty)"
+          next if tile == 0
+          next if tile != 1 && (tile == 2**Math.log2(tile).to_i)
+          raise ArgumentError, "#{tile.inspect} is not a valid tile value"
         end
       end
     end
@@ -42,7 +42,7 @@ module Game
     end
 
     def finished?
-      return false if rows.any? { |row| row.any? { |cell| cell == 0 } }
+      return false if rows.any? { |row| row.any? { |tile| tile == 0 } }
       (0..3).each do |rank|
         (0..2).each do |index|
           curnt = rows[rank][index]
@@ -55,19 +55,19 @@ module Game
     end
 
     def won?
-      rows.any? { |row| row.any? { |cell| cell >= 2048 } }
+      rows.any? { |row| row.any? { |tile| tile >= 2048 } }
     end
 
     def generate_tile
       y, x = INDEXES.select { |y, x| available? y, x }.sample
       return self unless y && x # an optimization
-      new_cells = rows.map.with_index do |row, index|
+      new_tiles = rows.map.with_index do |row, index|
         next row unless index == y
         row = row.dup
         row[x] = 2
         row
       end
-      self.class.new(new_cells)
+      self.class.new(new_tiles)
     end
 
     def max_tile
@@ -107,8 +107,8 @@ module Game
       rgb    = -> r, g, b { "\e[1;38;5;255;48;5;#{16 + 36*r + 6*g + b}m" }
       off    = "\e[0m"
       bg     = "\e[39;48;5;243m"
-      colour = -> cell do
-        case cell
+      colour = -> tile do
+        case tile
         when 0               then "\e[1;38;5;247;48;5;247m"
         when 2               then rgb[4,4,4]+"\e[1;38;5;237m"
         when 4               then rgb[4,4,3]+"\e[1;38;5;237m"
@@ -128,8 +128,8 @@ module Game
       formats        = widths.map { |w| "%#{w}d" }
       formatted_rows = rows.map do |row|
         "#{bg}  " <<
-          formats.zip(row).map do |format, cell|
-            "#{colour[cell]} #{format % cell} "
+          formats.zip(row).map do |format, tile|
+            "#{colour[tile]} #{format % tile} "
           end.join("#{bg} ") <<
           "#{bg}  #{off}\n"
       end.join

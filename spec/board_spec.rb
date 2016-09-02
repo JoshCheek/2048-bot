@@ -43,7 +43,7 @@ RSpec.describe 'Board' do
       ] }.to raise_error ArgumentError, /111/
     end
 
-    it 'returns a board with the cells of the array' do
+    it 'returns a board with the tiles of the array' do
       expect { Game::Board[
         [ 0,  2,  4,   8],
         [16, 32, 64, 128],
