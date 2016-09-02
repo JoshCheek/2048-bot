@@ -59,9 +59,9 @@ Whatevz.
 The heuristic
 -------------
 
-It's not very good. I had a version earlier that awarded it points for
-sequences of ascending tiles. I think reconsidering that might be a good
-way to improve it significantly.
+I've tried a number of different things now. The one that seems to work best
+is to give it points for ascending sequences. Otherwise it's too inclined to
+let the big tiles go to the middle.
 
 
 The heuristic bot
