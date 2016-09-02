@@ -122,7 +122,7 @@ RSpec.describe 'Board' do
       ]).to be_finished
     end
 
-    it 'passes edge cases that showed up while exploring', t:true do
+    it 'passes edge cases that showed up while exploring' do
       board = Game::Board[
         [16, 32, 64, 128],
         [4 ,  8,  2,   4],
