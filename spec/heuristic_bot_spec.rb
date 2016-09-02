@@ -75,7 +75,18 @@ RSpec.describe '2048 Bot' do
     ]
   end
 
-  it 'shifts in such a way that it combines tiles with some rudimentary intelligence', t:true do
+  it 'does not take moves that do nothing' do
+    board = Game::Board[
+      [16, 16, 256, 512],
+      [ 8, 64,  16,   4],
+      [ 4, 16,   4,  32],
+      [ 2,  2,   2,   2],
+    ]
+    move = bot_for(board).move
+    expect([:left, :right]).to include move
+  end
+
+  it 'shifts in such a way that it combines tiles with some rudimentary intelligence' do
     board = Game::Board.random_start
     cache = {}
     200.times do |i|

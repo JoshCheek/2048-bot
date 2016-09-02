@@ -20,27 +20,31 @@ module Game
 
     private
 
-    def best_move(depth_to_consider, board)
+    def best_move(depth, board)
       shift = ShiftBoard.new(board)
       [:up, :down, :left, :right]
         .map { |direction|
-          [ direction,
-            heuristic(depth_to_consider, shift.call(direction))
-          ]
+          next_board = shift.call(direction)
+          if board == next_board
+            [direction, 0]
+          else
+            [direction, cached_heuristic(depth, next_board)]
+          end
         }
         .max_by { |_direction, score| score }
     end
 
-    def heuristic(depth_to_consider, board)
-      cache[board] ||= if depth_to_consider.zero? || board.finished?
-                         Heuristic.rank(board)
-                       else
-                         _direction, score = best_move(
-                           depth_to_consider-1,
-                           board.generate_tile
-                         )
-                         score
-                       end
+    def cached_heuristic(depth, board)
+      cache[board] ||= heuristic(depth, board)
+    end
+
+    def heuristic(depth, board)
+      if depth.zero? || board.finished?
+        Heuristic.rank(board)
+      else
+        _direction, score = best_move(depth-1, board.generate_tile)
+        score
+      end
     end
   end
 end
