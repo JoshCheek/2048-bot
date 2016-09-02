@@ -8,7 +8,7 @@ require 'io/console'
 
 def show_frame(board)
   print "\e[H\e[2J"
-  puts Game::DisplayAnsiBoard.call(board).gsub("\n", "\r\n")
+  puts Game::DisplayAnsiBoard.call(board)
 end
 
 
