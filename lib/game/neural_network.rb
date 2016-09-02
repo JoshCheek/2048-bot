@@ -61,9 +61,9 @@ end
 
 class NeuralNetwork
   class Trainer
-    def self.init(layer_sizes:, learning_rate:, momentum:, random: Random)
+    def self.init(layer_sizes:, learning_rate:, momentum:, random: Random, network_class: NeuralNetwork)
       synapses = random_weights_for(layer_sizes, random)
-      network  = NeuralNetwork.new(layer_sizes, synapses)
+      network  = network_class.new(layer_sizes, synapses)
       changes  = initial_changes(synapses)
       new(network, changes, learning_rate, momentum)
     end
@@ -136,7 +136,7 @@ class NeuralNetwork
         end
       end
 
-      next_network = NeuralNetwork.new(network.layer_sizes, next_weights)
+      next_network = network.class.new(network.layer_sizes, next_weights)
       Trainer.new(next_network, next_changes, learning_rate, momentum)
     end
 
